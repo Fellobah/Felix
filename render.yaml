@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: whatsapp-bot
+    env: node
+    plan: free
+    buildCommand: "npm install"
+    startCommand: "node v1/index.js"
+    envVars:
+      - key: AUTH_STATE
+        value: ""

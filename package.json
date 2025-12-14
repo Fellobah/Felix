@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "package": "node build-zip.js"
+    "start:v1": "node v1/index.js",
+    "package": "node build-zip.js",
+    "export-auth": "node export-auth.js"
   },
   "author": "your-name",
   "license": "MIT",

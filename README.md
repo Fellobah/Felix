@@ -50,6 +50,22 @@ If you have GitHub CLI and are logged in you can instead run:
 
 ```bash
 gh repo create <repo-name> --public --source=. --push
+
+Deployment notes
+
+Heroku
+- Create an app on Heroku (dashboard) and add this repo as the app source.
+- Add a config var named `AUTH_STATE` and paste the Base64 string of your `v1_auth.json` (see below).
+- Scale the worker dyno: `heroku ps:scale worker=1`.
+- To obtain `AUTH_STATE`: run locally, scan the QR to login, then run `npm run export-auth` to print the base64 string; paste that into Heroku config.
+
+Render
+- Create a new service on Render using this repository. Use `node v1/index.js` as the start command.
+- Add an Environment Variable `AUTH_STATE` (empty initially). After pairing locally, set `AUTH_STATE` to the base64 output from `npm run export-auth` and redeploy.
+
+GitHub / v1
+- The `v1` folder contains a deployment-friendly entrypoint `v1/index.js` that accepts `AUTH_STATE` (base64) and prints an updated `AUTH_STATE` after credentials change. Use this file for hosted deploys.
+
 ```
 
 Notes
