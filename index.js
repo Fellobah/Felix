@@ -4,6 +4,7 @@ const { default: makeWASocket, useMultiFileAuthState, fetchLatestBaileysVersion 
 const { gTTS } = require('gtts');
 
 const CONFIG_PATH = './bot-config.json';
+const BUGS_PATH = './bugs.json';
 
 // In-memory game state for tic-tac-toe
 const tttGames = new Map();
@@ -62,6 +63,12 @@ function loadConfig() {
   }
 }
 
+function loadBugs() {
+  try { return JSON.parse(fs.readFileSync(BUGS_PATH, 'utf8')); } catch (e) { return []; }
+}
+
+function saveBugs(bugs) { fs.writeFileSync(BUGS_PATH, JSON.stringify(bugs, null, 2)); }
+
 async function saveConfig(newConfig) {
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(newConfig, null, 2));
 }
@@ -87,14 +94,15 @@ async function handleMessage(sock, msg, config) {
   if (!trimmed) return;
 
   if (trimmed === '!menu' || trimmed === '/menu') {
-    const menu = `*WhatsApp Bot Menu*\n\n*Author:* ${config.authorName} (${config.authorPhone})\n\n*Features:*\n- autoread: ${config.autoread}\n- autoreact: ${config.autoreact}\n- autoviewstatus: ${config.autoviewstatus}\n\n*Commands:*\n!menu or /menu - show this menu\n!toggle <feature> on|off - toggle features (autoread, autoreact, autoviewstatus)\n!group add <phone> - add a participant to this group (bot must be admin)\n!group promote <@jid> - promote a user to admin (group only)\n!group demote <@jid> - demote a user from admin (group only)\n!ttt - start tic-tac-toe\n!move <1-9> - make a move in tic-tac-toe`;
+    const menu = `*WhatsApp Bot Menu*\n\n*Author:* ${config.authorName} (${config.authorPhone})\n\n*Features:*\n- autoread: ${config.autoread}\n- autoreact: ${config.autoreact}\n- autoviewstatus: ${config.autoviewstatus}\n\n*Commands:*\n!menu or /menu - show this menu\n!toggle <feature> on|off - toggle features (autoread, autoreact, autoviewstatus)\n!group add <phone> - add a participant to this group (bot must be admin)\n!group promote <phone> - promote a user to admin (group only)\n!group demote <phone> - demote a user from admin (group only)\n!ttt - start tic-tac-toe\n!move <1-9> - make a move in tic-tac-toe\n!bug report <text> - report a bug\n!bug list - list reported bugs\n!bug close <id> - (owner only) close a bug`;
 
     // Send audio TTS for the menu
     try {
-      const tts = new gTTS(`Hello! Here's the bot menu. ${config.authorName} welcomes you. Check the chat for commands.`);
+      const ttsText = `Hello! This is the bot menu from ${config.authorName}. Available commands include menu, toggle, group, tic tac toe, and bug reporting. Use commands in chat as text.`;
+      const tts = new gTTS(ttsText);
       const tmpFile = `./menu-tts-${Date.now()}.mp3`;
       await new Promise((res, rej) => tts.save(tmpFile, (err) => err ? rej(err) : res()));
-      await sock.sendMessage(from, { audio: fs.createReadStream(tmpFile), mimetype: 'audio/mpeg', ptt: true });
+      await sock.sendMessage(from, { audio: fs.createReadStream(tmpFile), mimetype: 'audio/mpeg', ptt: true, contextInfo: { externalAdReply: { title: 'Bot Menu', body: 'Use !menu', sourceUrl: 'https://github.com/your-username/whatsapp-bot' } } });
       fs.unlinkSync(tmpFile);
     } catch (e) {
       console.error('TTS error', e);
@@ -231,6 +239,53 @@ async function handleMessage(sock, msg, config) {
     await sock.sendMessage(from, { text: 'Usage: !group add <phone> | !group promote <phone> | !group demote <phone>' });
     return;
   }
+}
+
+// Bug reporting
+if (trimmed.startsWith('!bug ')) {
+  const parts = trimmed.split(/\s+/);
+  const sub = parts[1];
+  if (sub === 'report') {
+    const textReport = parts.slice(2).join(' ');
+    if (!textReport) {
+      await sock.sendMessage(from, { text: 'Please provide a description: !bug report <description>' });
+      return;
+    }
+    const bugs = loadBugs();
+    const id = (bugs.length ? bugs[bugs.length-1].id + 1 : 1);
+    const senderId = (msg.key.participant || msg.key.remoteJid);
+    bugs.push({ id, text: textReport, from: senderId, status: 'open', ts: Date.now() });
+    saveBugs(bugs);
+    await sock.sendMessage(from, { text: `Thanks — bug #${id} reported. Owner will be notified.` });
+    // notify owner
+    try { const ownerJid = normalizePhone(config.authorPhone) + '@s.whatsapp.net'; await sock.sendMessage(ownerJid, { text: `New bug #${id} reported by ${senderId}: ${textReport}` }); } catch (e) {}
+    return;
+  }
+  if (sub === 'list') {
+    const bugs = loadBugs();
+    if (!bugs.length) { await sock.sendMessage(from, { text: 'No bugs reported.' }); return; }
+    const list = bugs.map(b => `#${b.id} [${b.status}] ${b.text} (by ${b.from})`).join('\n\n');
+    await sock.sendMessage(from, { text: `Reported bugs:\n\n${list}` });
+    return;
+  }
+  if (sub === 'close') {
+    const id = parseInt(parts[2],10);
+    const senderId = (msg.key.participant || msg.key.remoteJid);
+    const ownerJid = normalizePhone(config.authorPhone) + '@s.whatsapp.net';
+    if (senderId !== ownerJid) { await sock.sendMessage(from, { text: 'This command is for the owner only.' }); return; }
+    const bugs = loadBugs();
+    const b = bugs.find(x => x.id === id);
+    if (!b) { await sock.sendMessage(from, { text: `Bug #${id} not found.` }); return; }
+    b.status = 'closed'; saveBugs(bugs);
+    await sock.sendMessage(from, { text: `Bug #${id} closed.` });
+    return;
+  }
+  await sock.sendMessage(from, { text: 'Bug commands: !bug report <text> | !bug list | !bug close <id> (owner only)' });
+  return;
+}
+
+function normalizePhone(p) {
+  return p.replace(/[^0-9]/g, '').replace(/^0/, '');
 }
 
 start().catch(err => console.error(err));

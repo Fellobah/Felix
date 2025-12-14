@@ -31,6 +31,27 @@ Contact / Quick Link
 Automatic deployer link
 - After deployment you can update `bot-config.json` with your phone and author details. The project homepage includes a quick `wa.me` link to the configured author so visitors can contact you.
 
+Bug reporting (in-chat)
+- `!bug report <text>` — create a new bug report (notifies owner)
+- `!bug list` — shows open and closed reports
+- `!bug close <id>` — close a bug (owner only)
+
+GitHub push (local)
+1. Create a repository on GitHub (via website) and copy its HTTPS URL.
+2. Run these commands in this folder to push:
+
+```bash
+git remote add origin <YOUR_REPO_URL>
+git branch -M main
+git push -u origin main
+```
+
+If you have GitHub CLI and are logged in you can instead run:
+
+```bash
+gh repo create <repo-name> --public --source=. --push
+```
+
 Notes
 - The bot uses Baileys; keep your Node.js up to date (Node 16+ recommended).
 - This is a scaffold intended to be extended: group management and advanced features need additional permission checks and error handling.
