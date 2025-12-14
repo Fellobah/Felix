@@ -37,6 +37,33 @@
     </section>
 
     <section>
+        <h2>Deploy</h2>
+        <p>Choose a deployment method and follow the instructions (Heroku, Render, Docker/Panel).</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a class="button" href="#heroku" style="background:#6f42c1">Deploy to Heroku</a>
+            <a class="button" href="#render" style="background:#09f">Deploy to Render</a>
+            <a class="button" href="#docker" style="background:#333">Docker / Panel</a>
+            <a class="button" href="export-auth.js" download style="background:#2b6cb0">Download export-auth.js</a>
+            <button class="button" id="getSessionBtn" style="background:#dd6b20;margin-left:8px">Get Session ID</button>
+        </div>
+
+        <div id="sessionModal" style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);align-items:center;justify-content:center">
+            <div style="background:#fff;padding:20px;border-radius:8px;max-width:720px;margin:24px">
+                <h3>Get Session ID (AUTH_STATE)</h3>
+                <p>To get the session ID (base64 auth state):</p>
+                <ol>
+                    <li>Run the v1 bot locally: <code>npm run start:v1</code> and scan QR to login.</li>
+                    <li>Then run: <code>npm run export-auth</code> — this prints a base64 string.</li>
+                    <li>Copy that string and paste it into your hosting panel's env var named <code>AUTH_STATE</code>.</li>
+                </ol>
+                <p>You can also download <a href="export-auth.js" download>export-auth.js</a> and run it on the host where <code>v1_auth.json</code> is present.</p>
+                <p style="font-weight:600;color:#c53030">Security: keep this value secret.</p>
+                <div style="text-align:right"><button id="closeModal" class="button" style="background:#555">Close</button></div>
+            </div>
+        </div>
+    </section>
+
+    <section>
         <h2>Notes</h2>
         <ul>
             <li>Replace the GitHub URL above with your repository URL after you create the repo.</li>
@@ -45,5 +72,13 @@
         </ul>
     </section>
 
+    <script>
+        document.getElementById('getSessionBtn')?.addEventListener('click', function(){
+            document.getElementById('sessionModal').style.display = 'flex';
+        });
+        document.getElementById('closeModal')?.addEventListener('click', function(){
+            document.getElementById('sessionModal').style.display = 'none';
+        });
+    </script>
 </body>
 </html>
