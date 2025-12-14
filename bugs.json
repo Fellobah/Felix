@@ -1,1 +1,9 @@
-[]
+[
+	{
+		"id": 1,
+		"text": "Sample bug: initial placeholder entry",
+		"from": "+254725391914@s.whatsapp.net",
+		"status": "closed",
+		"ts": 1702521600000
+	}
+]

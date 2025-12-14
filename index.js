@@ -200,11 +200,20 @@ async function handleMessage(sock, msg, config) {
   async function groupAdd(sock, groupJid, phone) {
     try {
       const id = phone.replace(/[^0-9]/g, '') + '@s.whatsapp.net';
+      const meta = await sock.groupMetadata(groupJid);
+      const participants = meta.participants || [];
+      const me = (sock.user && (sock.user.id || sock.user.jid)) || null;
+      const meEntry = participants.find(p => p.id === me);
+      if (!meEntry || !meEntry.admin) {
+        return { ok: false, reason: 'bot_not_admin' };
+      }
+      const exists = participants.find(p => p.id === id);
+      if (exists) return { ok: false, reason: 'already_participant' };
       await sock.groupAdd(groupJid, [id]);
-      return true;
+      return { ok: true };
     } catch (e) {
       console.error('groupAdd error', e);
-      return false;
+      return { ok: false, reason: 'error', error: String(e) };
     }
   }
 
@@ -218,21 +227,34 @@ async function handleMessage(sock, msg, config) {
     }
     if (action === 'add' && parts.length >= 3) {
       const phone = parts[2];
-      const ok = await groupAdd(sock, from, phone);
-      if (ok) await sock.sendMessage(from, { text: `Attempted to add ${phone}. If the bot is admin the user will be added.` });
-      else await sock.sendMessage(from, { text: `Failed to add ${phone}. Ensure the bot is group admin and the number is correct.` });
+      const res = await groupAdd(sock, from, phone);
+      if (res.ok) {
+        await sock.sendMessage(from, { text: `Added ${phone} (or request sent).` });
+      } else {
+        if (res.reason === 'bot_not_admin') await sock.sendMessage(from, { text: 'I must be a group admin to add participants.' });
+        else if (res.reason === 'already_participant') await sock.sendMessage(from, { text: `${phone} is already in this group.` });
+        else await sock.sendMessage(from, { text: `Failed to add ${phone}. ${res.error || ''}` });
+      }
       return;
     }
     if ((action === 'promote' || action === 'demote') && parts.length >= 3) {
       const phone = parts[2];
       const id = phone.replace(/[^0-9]/g, '') + '@s.whatsapp.net';
       try {
+        const meta = await sock.groupMetadata(from);
+        const participants = meta.participants || [];
+        const senderId = msg.key.participant || msg.key.remoteJid;
+        const senderEntry = participants.find(p => p.id === senderId);
+        const me = (sock.user && (sock.user.id || sock.user.jid)) || null;
+        const meEntry = participants.find(p => p.id === me);
+        if (!meEntry || !meEntry.admin) { await sock.sendMessage(from, { text: 'I must be a group admin to change participant roles.' }); return; }
+        if (!senderEntry || !senderEntry.admin) { await sock.sendMessage(from, { text: 'This command is for group admins only.' }); return; }
         const mode = action === 'promote' ? 'promote' : 'demote';
         await sock.groupParticipantsUpdate(from, [id], mode);
-        await sock.sendMessage(from, { text: `${action} request processed for ${phone}` });
+        await sock.sendMessage(from, { text: `${action} processed for ${phone}` });
       } catch (e) {
         console.error('group participants update error', e);
-        await sock.sendMessage(from, { text: `Failed to ${action} ${phone}.` });
+        await sock.sendMessage(from, { text: `Failed to ${action} ${phone}. ${String(e)}` });
       }
       return;
     }
