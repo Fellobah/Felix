@@ -1,5 +1,9 @@
 # WhatsApp Bot (Node.js + Baileys)
 
+A compact WhatsApp bot scaffold with autoread/auto-react, TTS menu, tic-tac-toe, group management and bug reporting. See quick deploy instructions below.
+
+---
+
 This project provides a simple WhatsApp bot scaffold using the Baileys library. It includes feature toggles and a simple menu interface.
 
 Features
