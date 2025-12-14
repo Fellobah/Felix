@@ -69,6 +69,49 @@ Render
 
 GitHub / v1
 - The `v1` folder contains a deployment-friendly entrypoint `v1/index.js` that accepts `AUTH_STATE` (base64) and prints an updated `AUTH_STATE` after credentials change. Use this file for hosted deploys.
+-
+Bot hosting panel / container deployment
+
+This repo includes two options for panel-based hosting:
+
+- PM2 (classic VPS / panel): see `ecosystem.config.js`. Use PM2 to run `v1/index.js` persistently and manage restarts.
+- Docker (container/panel): see `Dockerfile`. Panels that support Docker (or Kubernetes) can build this image and run it; set the `AUTH_STATE` environment variable to the base64 string exported by `npm run export-auth`.
+
+Panel deploy quick-starts
+
+1) PM2 (VPS or hosting panel with process manager)
+
+```bash
+# on your server or panel terminal
+git clone https://github.com/Fellobah/Felix.git
+cd Felix
+npm ci --production
+# either provide v1_auth.json in the repo, or set AUTH_STATE env var before starting
+# start with pm2 using the provided ecosystem file
+npm i -g pm2
+pm2 start ecosystem.config.js
+pm2 save
+pm2 startup
+```
+
+2) Docker / container panels
+
+Build & run locally (or let panel build from repo):
+
+```bash
+docker build -t whatsapp-bot:latest .
+docker run -e AUTH_STATE="<base64-string>" --restart unless-stopped -d whatsapp-bot:latest
+```
+
+For panels that accept a repo and a Dockerfile (Ploi, CapRover, Dokku, custom panels), point them at this repo, ensure they build the Dockerfile, and set the `AUTH_STATE` env var in the panel's environment configuration.
+
+3) Pterodactyl / Game-panel style
+
+Create an Egg/Service that runs `node v1/index.js`. Add `AUTH_STATE` as an environment variable in the panel service definition. Upload repository contents or link GitHub for auto-deploy.
+
+Security note
+
+The `AUTH_STATE` is a sensitive token representing your WhatsApp session. Keep it private and only add it to trusted hosting panels. If leaked, rotate your session by re-authenticating and updating the value.
 
 ```
 
