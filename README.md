@@ -1,6 +1,7 @@
-<div align="center">
 
 # Felix – Professional WhatsApp Bug Bot 🤖
+
+<div align="center">
 
 <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=28&pause=1000&color=25D366&center=true&vCenter=true&width=600&lines=Track+Bugs+Effortlessly;Auto+React+%26+Read;Node.js+%2B+Baileys" alt="Typing Animation"/>
 
@@ -14,11 +15,6 @@
   <img src="https://img.shields.io/github/package-json/v/Fellobah/Felix?style=for-the-badge&color=purple" alt="Version"/>
 </p>
 
-<p>
-  <img src="https://img.shields.io/badge/Node.js-18+-green?style=flat-square" alt="Node.js"/>
-  <img src="https://img.shields.io/badge/Baileys-Latest-blue?style=flat-square" alt="Baileys"/>
-</p>
-
 </div>
 
 ---
@@ -27,10 +23,7 @@
 
 - ✅ Auto-read incoming messages  
 - 🎭 Auto-react with emojis  
-- 🐞 Bug reporting system:
-  - `!bug report <text>` — create a new bug report  
-  - `!bug list` — view all open and closed bugs  
-  - `!bug close <id>` — close a bug (owner only)  
+- 🐞 Bug reporting system (`!bug report`, `!bug list`, `!bug close`)  
 - 🔊 TTS menu commands  
 - 🎮 Tic-Tac-Toe game  
 - 👥 Group management utilities  
@@ -55,45 +48,81 @@
 
 ## 🚀 Quick Start
 
-```bash
 git clone https://github.com/Fellobah/Felix.git
 cd Felix
 npm install
 npm start
 
- Scan the QR code in your terminal to connect your WhatsApp account.
+Scan the QR code in your terminal to connect your WhatsApp account.
 
-☁️ Cloud Deployments
-<p align="center"> <a href="https://heroku.com/deploy"> <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy to Heroku"/> </a> <a href="https://render.com/deploy"> <img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render"/> </a> <a href="https://railway.app/new/template"> <img src="https://railway.app/button.svg" alt="Deploy to Railway"/> </a> </p>
-🖥 Panel Deployments
-<p align="center"> <a href="#"> <img src="https://img.shields.io/badge/PM2-Deploy-blue?style=for-the-badge&logo=pm2" alt="PM2"/> </a> <a href="#"> <img src="https://img.shields.io/badge/Docker-Run-blue?style=for-the-badge&logo=docker" alt="Docker"/> </a> <a href="#"> <img src="https://img.shields.io/badge/Pterodactyl-Setup-orange?style=for-the-badge&logo=pterodactyl" alt="Pterodactyl"/> </a> </p>
-🧠 Deployment Notes
+---
 
-Use v1/index.js for hosted panels
+# Deployment
 
-Set AUTH_STATE environment variable (Base64 of v1_auth.json)
+<p align="center">
+  <!-- Cloud Deployments -->
+  <a href="https://heroku.com/deploy">
+    <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy to Heroku"/>
+  </a>
+  <a href="https://render.com/deploy">
+    <img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render"/>
+  </a>
+  <a href="https://railway.app/new/template">
+    <img src="https://railway.app/button.svg" alt="Deploy to Railway"/>
+  </a>
 
-Export auth using:
+  <!-- Panel Deployments -->
+  <a href="#">
+    <img src="https://img.shields.io/badge/PM2-Deploy-blue?style=for-the-badge&logo=pm2" alt="PM2"/>
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/badge/Docker-Run-blue?style=for-the-badge&logo=docker" alt="Docker"/>
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/badge/Pterodactyl-Setup-orange?style=for-the-badge&logo=pterodactyl" alt="Pterodactyl"/>
+  </a>
+</p>
 
-npm run export-auth
+---
 
+## 💬 Follow & Contact
 
-⚠️ Keep your AUTH_STATE private!
+<p align="center">
+  <a href="https://wa.me/254725391914">
+    <img src="https://img.shields.io/badge/WhatsApp-Chat%20Now-25D366?style=for-the-badge&logo=whatsapp&logoColor=white"/>
+  </a>
+  <a href="https://discord.gg/your-server">
+    <img src="https://img.shields.io/badge/Discord-Join-7289DA?style=for-the-badge&logo=discord&logoColor=white"/>
+  </a>
+  <a href="https://linkedin.com/in/fellobah">
+    <img src="https://img.shields.io/badge/LinkedIn-Follow-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
+  </a>
+  <a href="https://twitter.com/fellobah">
+    <img src="https://img.shields.io/badge/Twitter-Follow-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white"/>
+  </a>
+</p>
 
-💬 Follow & Contact
-<p align="center"> <a href="https://wa.me/254725391914"> <img src="https://img.shields.io/badge/WhatsApp-Chat%20Now-25D366?style=for-the-badge&logo=whatsapp&logoColor=white"/> </a> <a href="https://discord.gg/your-server"> <img src="https://img.shields.io/badge/Discord-Join-7289DA?style=for-the-badge&logo=discord&logoColor=white"/> </a> <a href="https://linkedin.com/in/fellobah"> <img src="https://img.shields.io/badge/LinkedIn-Follow-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/> </a> <a href="https://twitter.com/fellobah"> <img src="https://img.shields.io/badge/Twitter-Follow-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white"/> </a> </p>
-👨‍💻 Developer
-<div align="center"> <img src="https://avatars.githubusercontent.com/u/725391914?s=200&v=4" width="120" style="border-radius:50%;" alt="Developer"/> <p><b>Fellobah</b><br>Lead Developer & Bot Creator</p> </div>
-⭐ Support This Project
+---
 
-⭐ Star this repo
+## 👨‍💻 Developer
 
-🍴 Fork it
+<div align="center">
+  <img src="https://avatars.githubusercontent.com/u/725391914?s=200&v=4" width="120" style="border-radius:50%;" alt="Developer"/>
+  <p><b>Fellobah</b><br>Lead Developer & Bot Creator</p>
+</div>
 
-👀 Watch for updates
+---
 
-🐞 Report bugs
+## ⭐ Support This Project
 
-📝 Share feedback
+- ⭐ Star this repo  
+- 🍴 Fork it  
+- 👀 Watch for updates  
+- 🐞 Report bugs  
+- 📝 Share feedback  
 
-<div align="center"> <img src="https://media.giphy.com/media/3o6ZsYm6FdD2hhe88I/giphy.gif" width="250" alt="Professional Bot Animation"/> </div> ```
+---
+
+<div align="center">
+<img src="https://media.giphy.com/media/3o6ZsYm6FdD2hhe88I/giphy.gif" width="250" alt="Professional Bot Animation"/>
+</div>
